@@ -1,10 +1,15 @@
 package model;
 
-public class Serienticket extends Ticket {
-    private Veranstaltung[] veranstaltungen;
+import java.util.HashMap;
 
-    public Serienticket(double preis, Platztyp platztyp, Veranstaltung[] veranstaltungen) {
-        super(preis, platztyp);
+public class Serienticket extends Ticket {
+    private HashMap<Veranstaltung, Platztyp> veranstaltungen;
+
+    public HashMap<Veranstaltung, Platztyp> getVeranstaltungen() {
+        return veranstaltungen;
+    }
+
+    public void setVeranstaltungen(HashMap<Veranstaltung, Platztyp> veranstaltungen) {
         this.veranstaltungen = veranstaltungen;
     }
 }
