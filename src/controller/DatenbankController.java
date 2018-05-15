@@ -3,7 +3,6 @@ package controller;
 import misc.InvalidDataException;
 import model.*;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -18,7 +17,6 @@ public class DatenbankController {
     private boolean connected;
     private final String username = "root";
     private final String password = "root";
-    private final DateFormat date = new SimpleDateFormat("dd.MM.yyyy");
     private final DateFormat dateTime = new SimpleDateFormat("kk:mm:ss dd.MM.yyyy");
 
     public static DatenbankController getInstance() throws SQLException {
@@ -35,6 +33,11 @@ public class DatenbankController {
      * @throws SQLException
      */
     private DatenbankController() throws SQLException {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         connection = DriverManager.getConnection("jdbc:mysql://localhost/ticketshop", username, password);
         connected = true;
         try {
@@ -50,8 +53,7 @@ public class DatenbankController {
                 "CREATE TABLE IF NOT EXISTS ACCOUNT(" +
                         "ACCOUNT_ID BIGINT AUTO_INCREMENT PRIMARY KEY," +
                         "EMAIL VARCHAR(100) NOT NULL UNIQUE," +
-                        "PASSWORD VARCHAR(100) NOT NULL," +
-                        "GEBURTSDATUM DATE" +
+                        "PASSWORD VARCHAR(100) NOT NULL" +
                         ")";
 
         final String adresseSetup = "CREATE TABLE IF NOT EXISTS ADRESSE(" +
@@ -117,10 +119,8 @@ public class DatenbankController {
 
         //DUMMY_DATEN
         PreparedStatement varStatement;
-        varStatement = connection.prepareStatement("INSERT INTO ACCOUNT VALUES (NULL, 'admin@admin.com', 'password123', ?)");
         if (!statement.executeQuery("SELECT * FROM ACCOUNT").next()) {
-            varStatement.setDate(1, new Date(date.parse("01.01.2018").getTime()));
-            varStatement.execute();
+            statement.execute("INSERT INTO ACCOUNT VALUES (NULL, 'admin@admin.com', 'password123')");
         }
 
         if (!statement.executeQuery("SELECT * FROM ADRESSE").next())
@@ -135,6 +135,11 @@ public class DatenbankController {
             varStatement.setTimestamp(1, new Timestamp(dateTime.parse("15:30:00 12.05.2018").getTime()));
             varStatement.setTimestamp(2, new Timestamp(dateTime.parse("17:15:00 12.05.2018").getTime()));
             varStatement.execute();
+            varStatement = connection.prepareStatement("INSERT INTO VERANSTALTUNG VALUES (NULL, 'Bayern - Dortmund', 10.0, ?, ?, 1)");
+            varStatement.setTimestamp(1, new Timestamp(dateTime.parse("15:30:00 19.05.2018").getTime()));
+            varStatement.setTimestamp(2, new Timestamp(dateTime.parse("17:15:00 19.05.2018").getTime()));
+            varStatement.execute();
+
         }
 
         if (!statement.executeQuery("SELECT * FROM EINZELTICKET").next())
@@ -143,18 +148,11 @@ public class DatenbankController {
         if (!statement.executeQuery("SELECT * FROM SERIENTICKET").next())
             statement.execute("INSERT INTO SERIENTICKET VALUES (NULL, 10, 1)");
 
-        if (!statement.executeQuery("SELECT * FROM SERIENTICKET_VERANSTALTUNG").next())
+        if (!statement.executeQuery("SELECT * FROM SERIENTICKET_VERANSTALTUNG").next()) {
             statement.execute("INSERT INTO SERIENTICKET_VERANSTALTUNG VALUES (1, 1, 'STEHPLATZ')");
-
-
-    }
-
-    public void stop() throws SQLException {
-        if (connected) {
-            connection.close();
-            connection = null;
-            connected = false;
+            statement.execute("INSERT INTO SERIENTICKET_VERANSTALTUNG VALUES (1, 2, 'STEHPLATZ')");
         }
+
     }
 
     public Account login(String email, String password) throws InvalidDataException, SQLException {
@@ -175,10 +173,10 @@ public class DatenbankController {
         if (!rs.next())
             throw new InvalidDataException("Der Account konnte nicht gefunden werden. Bitte schließe die Applikation und öffne sie erneut.");
         account.setEmail(rs.getString("EMAIL"));
-        account.setGeburtsdatum(new java.util.Date(rs.getDate("GEBURTSDATUM").getTime()));
     }
 
     public void ladeGekaufteTickets(Account account) throws SQLException {
+        Veranstaltung[] veranstaltungen = ladeVeranstaltungen();
         Statement statement = connection.createStatement();
         ResultSet rs;
         ArrayList<Ticket> tickets = new ArrayList<>();
@@ -195,30 +193,44 @@ public class DatenbankController {
                     einzelticket.setPlatztyp(Platztyp.SITZPLATZ);
             }
             einzelticket.setPreis(rs.getDouble("PREIS"));
+            for (Veranstaltung veranstaltung : veranstaltungen)
+                if (veranstaltung.getVeranstaltung_id() == rs.getLong("VERANSTALTUNG")) {
+                    einzelticket.setVeranstaltung(veranstaltung);
+                }
             tickets.add(einzelticket);
         }
 
         //Lädt Serientickets und fügt sie der Liste hinzu
-        rs=null;
         rs = statement.executeQuery("SELECT * FROM SERIENTICKET WHERE BESITZER=" + account.getId());
-        while(rs.next()) {
+        while (rs.next()) {
             Serienticket serienticket = new Serienticket();
             serienticket.setTicketnummer(rs.getLong("SERIENTICKET_ID"));
             serienticket.setPreis(rs.getDouble("PREIS"));
-            HashMap<Veranstaltung, Platztyp> veranstaltungen = new HashMap<>();
-            ResultSet subrs = statement.executeQuery("SELECT VERANSTALTUNG, PLATZTYP FROM SERIENTICKET_VERANSTALTUNG WHERE SERIENTICKET ="+serienticket.getTicketnummer());
-            //while(subrs.next())
-              //  veranstaltungen.put(rs.get)
-
+            HashMap<Veranstaltung, Platztyp> veranstaltungenPlatztyp = new HashMap<>();
+            Statement substatement = connection.createStatement();
+            ResultSet subrs = substatement.executeQuery("SELECT VERANSTALTUNG, PLATZTYP FROM SERIENTICKET_VERANSTALTUNG WHERE SERIENTICKET =" + serienticket.getTicketnummer());
+            while (subrs.next()) {
+                Veranstaltung veranstaltung = null;
+                long id = subrs.getLong("VERANSTALTUNG");
+                for (Veranstaltung v : veranstaltungen) {
+                    if (id == v.getVeranstaltung_id()) {
+                        veranstaltung = v;
+                        break;
+                    }
+                }
+                veranstaltungenPlatztyp.put(veranstaltung, subrs.getString("PLATZTYP").equals("SITZPLATZ") ? Platztyp.SITZPLATZ : Platztyp.STEHPLATZ);
+            }
+            serienticket.setVeranstaltungen(veranstaltungenPlatztyp);
+            tickets.add(serienticket);
         }
+        account.setTickets(tickets.toArray(new Ticket[0]));
     }
 
     public Veranstaltung[] ladeVeranstaltungen() throws SQLException {
         LinkedList<Veranstaltung> veranstaltungen = new LinkedList<>();
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery("SELECT * FROM VERANSTALTUNG v INNER JOIN VERANSTALTUNGSORT vo ON v.VERANSTALTUNGSORT = vo.VERANSTALTUNGSORT_ID INNER JOIN ADRESSE a ON vo.ADRESSE = a.ADRESSE_ID");
-        while(rs.next())
-        {
+        while (rs.next()) {
             Veranstaltung veranstaltung = new Veranstaltung(rs.getLong("VERANSTALTUNG_ID"));
             veranstaltung.setEventname(rs.getString("EVENTNAME"));
             veranstaltung.setPreis(rs.getDouble("PREIS"));
@@ -239,19 +251,40 @@ public class DatenbankController {
 
             veranstaltungen.add(veranstaltung);
         }
-        return  veranstaltungen.toArray(new Veranstaltung[0]);
+        return veranstaltungen.toArray(new Veranstaltung[0]);
     }
 
     public void kaufeEinzelticket(Account account, Veranstaltung veranstaltung) {
         try {
             Statement statement = connection.createStatement();
-            statement.execute("INSERT INTO EINZELTICKET VALUES (NULL, 10, 'SITZPLATZ', " + veranstaltung.getVeranstaltung_id() + ", " +account.getId() + ")");
+            statement.execute("INSERT INTO EINZELTICKET VALUES (NULL, 10, 'SITZPLATZ', " + veranstaltung.getVeranstaltung_id() + ", " + account.getId() + ")");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void kaufeSerienticket(Account account, Veranstaltung[] ausgewaehlte) {
-        
+    public void kaufeSerienticket(Account account, Veranstaltung[] ausgewaehlte, double preis) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute("INSERT INTO SERIENTICKET VALUES (NULL, " + preis + ", " + account.getId() + ")");
+            ResultSet rs = statement.executeQuery("SELECT LAST_INSERT_ID()");
+            rs.next();
+            long id = rs.getLong("LAST_INSERT_ID()");
+            for(Veranstaltung veranstaltung : ausgewaehlte)
+                statement.execute("INSERT INTO SERIENTICKET_VERANSTALTUNG VALUES (" + id + ", " + veranstaltung.getVeranstaltung_id() +", 'STEHPLATZ')");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void registrieren(String email, String password) throws InvalidDataException {
+        try {
+            PreparedStatement preStatement = connection.prepareStatement("INSERT INTO ACCOUNT VALUES (NULL, ?, ?)");
+            preStatement.setString(1, email);
+            preStatement.setString(2, password);
+            preStatement.execute();
+        } catch (SQLException e) {
+            throw new InvalidDataException("Email bereits in Benutzung");
+        }
     }
 }

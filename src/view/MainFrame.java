@@ -1,7 +1,5 @@
 package view;
 
-import model.Veranstaltung;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -29,6 +27,8 @@ public class MainFrame extends JFrame{
 
     public void changeView(JPanel newView){
         // TODO Check, whether pack is necessary
+        if(currentView!=null)
+        layout.remove(currentView);
         currentView = newView;
         layout.add(currentView, BorderLayout.CENTER);
         pack();

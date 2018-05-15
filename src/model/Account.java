@@ -1,14 +1,9 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 public class Account {
     private final long id;
     private String email;
-    private String passwort;
-    private Date geburtsdatum;
-    private ArrayList<Ticket> tickets;
+    private Ticket[] tickets;
 
 
     public Account(long id) {
@@ -19,11 +14,7 @@ public class Account {
         this.email = email;
     }
 
-    public void setPasswort(String passwort) {
-        this.passwort = passwort;
-    }
-
-    public void setTickets(ArrayList<Ticket> tickets) {
+    public void setTickets(Ticket[] tickets) {
         this.tickets = tickets;
     }
 
@@ -35,20 +26,7 @@ public class Account {
         return email;
     }
 
-    public String getPasswort() {
-        return passwort;
-    }
-
-    public Date getGeburtsdatum() {
-        return geburtsdatum;
-    }
-
-    public void setGeburtsdatum(Date geburtsdatum) {
-        this.geburtsdatum = geburtsdatum;
-    }
-
-
-    public ArrayList<Ticket> getTickets() {
+    public Ticket[] getTickets() {
         return tickets;
     }
 

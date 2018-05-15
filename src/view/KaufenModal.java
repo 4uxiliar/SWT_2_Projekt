@@ -11,7 +11,7 @@ public class KaufenModal extends JDialog {
     private JLabel beschreibung;
     private JLabel preis;
     private JButton kaufen;
-    double gesamtpreis;
+    private double gesamtpreis;
 
     public KaufenModal(JFrame owner, Veranstaltung[] veranstaltungen) {
         super(owner, true);

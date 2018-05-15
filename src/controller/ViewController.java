@@ -23,7 +23,7 @@ public class ViewController {
         mainFrame.getHeader().beobachteMeineTickets(e -> {
             try {
                 dbc.ladeGekaufteTickets(account);
-                mainFrame.changeView(new MeineTickets());
+                mainFrame.changeView(new MeineTickets(account));
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
@@ -40,7 +40,7 @@ public class ViewController {
                             if (ausgewaehlte.length == 1)
                                 dbc.kaufeEinzelticket(account, ausgewaehlte[0]);
                             else
-                                dbc.kaufeSerienticket(account, ausgewaehlte);
+                                dbc.kaufeSerienticket(account, ausgewaehlte, kaufenModal.getPreis());
                             kaufenModal.setVisible(false);
                         });
                         kaufenModal.pack();
@@ -67,8 +67,21 @@ public class ViewController {
                     }
                 }
         );
+        loginModal.beobachteRegistrieren(e -> {
+            RegistrierenModal registrierenModal = new RegistrierenModal(mainFrame);
+            registrierenModal.beobachteRegistrieren(e1 -> {
+                try {
+                    dbc.registrieren(registrierenModal.getCurrentEmail(), registrierenModal.getCurrentPassword());
+                    registrierenModal.setVisible(false);
+                    loginModal.setVisible(true);
+                } catch (InvalidDataException ex) {
+                    registrierenModal.registrierenFehlgeschlagen();
+                }
+           });
+            loginModal.setVisible(false);
+            registrierenModal.setVisible(true);
+        });
         loginModal.setVisible(true);
-        //mainFrame = new MainFrame();
     }
 
     public static ViewController getInstance() {
