@@ -1,12 +1,12 @@
-package model;
+package datenhaltung;
 
-public class Account {
+public class AccountDTO {
     private final long id;
     private String email;
-    private Ticket[] tickets;
+    private TicketDTO[] tickets;
 
 
-    public Account(long id) {
+    public AccountDTO(long id) {
         this.id = id;
     }
 
@@ -14,7 +14,7 @@ public class Account {
         this.email = email;
     }
 
-    public void setTickets(Ticket[] tickets) {
+    public void setTickets(TicketDTO[] tickets) {
         this.tickets = tickets;
     }
 
@@ -26,9 +26,7 @@ public class Account {
         return email;
     }
 
-    public Ticket[] getTickets() {
+    public TicketDTO[] getTickets() {
         return tickets;
     }
-
-
 }

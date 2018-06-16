@@ -1,16 +1,16 @@
-package model;
+package datenhaltung;
 
 import java.util.Date;
 
-public class Veranstaltung {
+public class VeranstaltungDTO {
     private final long veranstaltung_id;
     private String eventname;
     private Double preis;
     private Date vonDatum;
     private Date bisDatum;
-    private Veranstaltungsort veranstaltungsort;
+    private VeranstaltungsortDTO veranstaltungsort;
 
-    public Veranstaltung(long veranstaltung_id) {
+    public VeranstaltungDTO(long veranstaltung_id) {
         this.veranstaltung_id = veranstaltung_id;
     }
 
@@ -34,17 +34,28 @@ public class Veranstaltung {
         this.preis = preis;
     }
 
+    public Date getVonDatum() {
+        return vonDatum;
+    }
 
     public void setVonDatum(Date vonDatum) {
         this.vonDatum = vonDatum;
+    }
+
+    public Date getBisDatum() {
+        return bisDatum;
     }
 
     public void setBisDatum(Date bisDatum) {
         this.bisDatum = bisDatum;
     }
 
-    public void setVeranstaltungsort(Veranstaltungsort veranstaltungsort) {
+    public void setVeranstaltungsort(VeranstaltungsortDTO veranstaltungsort) {
         this.veranstaltungsort = veranstaltungsort;
+    }
+
+    public VeranstaltungsortDTO getVeranstaltungsort() {
+        return veranstaltungsort;
     }
 
     @Override

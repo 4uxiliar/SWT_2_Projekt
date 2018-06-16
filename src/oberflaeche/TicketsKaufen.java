@@ -1,16 +1,16 @@
-package view;
+package oberflaeche;
 
-import model.Veranstaltung;
+import datenhaltung.VeranstaltungDTO;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class TicketsKaufen extends JPanel {
-    private JList<Veranstaltung> veranstaltungen;
+    private JList<VeranstaltungDTO> veranstaltungen;
     private JButton kaufen;
 
-    public TicketsKaufen(Veranstaltung[] veranstaltungen) {
+    public TicketsKaufen(VeranstaltungDTO[] veranstaltungen) {
         super(new GridLayout(2, 1));
         this.veranstaltungen = new JList<>(veranstaltungen);
         this.veranstaltungen.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -23,7 +23,7 @@ public class TicketsKaufen extends JPanel {
         kaufen.addActionListener(actionListener);
     }
 
-    public Veranstaltung[] getAusgewaehlteVeranstaltungen() {
-        return this.veranstaltungen.getSelectedValuesList().toArray(new Veranstaltung[0]);
+    public VeranstaltungDTO[] getAusgewaehlteVeranstaltungen() {
+        return this.veranstaltungen.getSelectedValuesList().toArray(new VeranstaltungDTO[0]);
     }
 }

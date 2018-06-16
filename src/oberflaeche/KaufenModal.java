@@ -1,6 +1,6 @@
-package view;
+package oberflaeche;
 
-import model.Veranstaltung;
+import datenhaltung.VeranstaltungDTO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,10 +13,10 @@ public class KaufenModal extends JDialog {
     private JButton kaufen;
     private double gesamtpreis;
 
-    public KaufenModal(JFrame owner, Veranstaltung[] veranstaltungen) {
+    public KaufenModal(JFrame owner, VeranstaltungDTO[] veranstaltungen) {
         super(owner, true);
         String titel, bezeichnung = "<html><body>";
-        for (Veranstaltung veranstaltung : veranstaltungen) {
+        for (VeranstaltungDTO veranstaltung : veranstaltungen) {
             gesamtpreis += veranstaltung.getPreis();
             bezeichnung += veranstaltung.getEventname() + "<br>";
         }

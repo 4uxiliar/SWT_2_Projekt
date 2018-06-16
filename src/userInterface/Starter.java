@@ -1,11 +1,10 @@
 package userInterface;
 
-import controller.DatenbankController;
-import controller.ViewController;
+import oberflaeche.ViewController;
 
-import java.sql.SQLException;
+import java.util.Observable;
 
-public class Starter {
+public class Starter extends Observable{
 
     public static void main(String[] args) {
 

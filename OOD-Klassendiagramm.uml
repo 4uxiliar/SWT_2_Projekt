@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Diagram>
   <ID>JAVA</ID>
-  <OriginalElement>controller</OriginalElement>
+  <OriginalElement>fachkonzept</OriginalElement>
   <nodes>
-    <node x="0.0" y="621.0">view.MainFrame</node>
-    <node x="522.0" y="621.0">model.Veranstaltungsort</node>
-    <node x="717.0" y="621.0">model.Platztyp</node>
-    <node x="0.0" y="229.0">model.Veranstaltung</node>
-    <node x="211.0" y="621.0">view.TicketsKaufen</node>
-    <node x="219.0" y="436.0">controller.ViewController</node>
-    <node x="519.0" y="229.0">model.Account</node>
-    <node x="0.0" y="436.0">view.KaufenModal</node>
-    <node x="690.0" y="436.0">model.Adresse</node>
-    <node x="245.0" y="124.0">model.Einzelticket</node>
-    <node x="203.0" y="762.0">view.MeineTickets</node>
+    <node x="0.0" y="621.0">oberflaeche.MainFrame</node>
+    <node x="522.0" y="621.0">datenhaltung.Veranstaltungsort</node>
+    <node x="717.0" y="621.0">datenhaltung.Platztyp</node>
+    <node x="0.0" y="229.0">datenhaltung.Veranstaltung</node>
+    <node x="211.0" y="621.0">oberflaeche.TicketsKaufen</node>
+    <node x="219.0" y="436.0">oberflaeche.ViewController</node>
+    <node x="519.0" y="229.0">datenhaltung.Account</node>
+    <node x="0.0" y="436.0">oberflaeche.KaufenModal</node>
+    <node x="690.0" y="436.0">datenhaltung.Adresse</node>
+    <node x="245.0" y="124.0">datenhaltung.Einzelticket</node>
+    <node x="203.0" y="762.0">oberflaeche.MeineTickets</node>
     <node x="366.0" y="762.0">userInterface.Starter</node>
-    <node x="0.0" y="0.0">controller.DatenbankController</node>
-    <node x="300.0" y="229.0">view.LoginModal</node>
-    <node x="419.0" y="124.0">model.Serienticket</node>
+    <node x="0.0" y="0.0">datenhaltung.DatenbankController</node>
+    <node x="300.0" y="229.0">oberflaeche.LoginModal</node>
+    <node x="419.0" y="124.0">datenhaltung.Serienticket</node>
     <node x="0.0" y="762.0">misc.InvalidDataException</node>
-    <node x="371.75" y="0.0">model.Ticket</node>
-    <node x="464.0" y="436.0">view.Header</node>
+    <node x="371.75" y="0.0">datenhaltung.Ticket</node>
+    <node x="464.0" y="436.0">oberflaeche.Header</node>
   </nodes>
   <notes />
   <edges>
-    <edge source="model.Serienticket" target="model.Ticket">
+    <edge source="datenhaltung.Serienticket" target="datenhaltung.Ticket">
       <point x="0.0" y="-26.0" />
       <point x="590.5" y="99.0" />
       <point x="498.5" y="99.0" />
       <point x="42.25" y="37.0" />
     </edge>
-    <edge source="model.Einzelticket" target="model.Ticket">
+    <edge source="datenhaltung.Einzelticket" target="datenhaltung.Ticket">
       <point x="0.0" y="-26.0" />
       <point x="322.0" y="99.0" />
       <point x="414.0" y="99.0" />

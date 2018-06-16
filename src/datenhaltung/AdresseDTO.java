@@ -1,10 +1,19 @@
-package model;
+package datenhaltung;
 
-public class Adresse {
+public class AdresseDTO {
+    private final long id;
     private String ort;
     private String plz;
     private String strasse;
     private String hausnumer;
+
+    public AdresseDTO(long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
 
     public void setOrt(String ort) {
         this.ort = ort;
@@ -24,6 +33,6 @@ public class Adresse {
 
     @Override
     public String toString() {
-        return ort + "    " + plz + "    " + strasse + "    " + hausnumer;
+        return ort + " " + plz + " " + strasse + " " + hausnumer;
     }
 }

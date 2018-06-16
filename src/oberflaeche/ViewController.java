@@ -1,69 +1,51 @@
-package controller;
+package oberflaeche;
 
+import datenhaltung.*;
+import fachkonzept.Fachkonzept;
 import misc.InvalidDataException;
-import model.Account;
-import model.Veranstaltung;
-import view.*;
-
-import java.sql.SQLException;
 
 public class ViewController {
     private static ViewController vc;
     private DatenbankController dbc;
     private MainFrame mainFrame;
-    private Account account;
-
+    private AccountDTO account;
+    private Fachkonzept am = new Fachkonzept(new AccountDAOMySQL(), new EinzelticketDAOMySQL(), new SerienticketDAOMySQL(), new VeranstaltungDAOMySQL(), new VeranstaltungsortDAOMySQL(), new AdresseDAOMySQL());
     private ViewController() {
-        try {
             dbc = DatenbankController.getInstance();
             mainFrame = new MainFrame();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         mainFrame.getHeader().beobachteMeineTickets(e -> {
-            try {
-                dbc.ladeGekaufteTickets(account);
+                am.ladeTickets(account);
                 mainFrame.changeView(new MeineTickets(account));
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
         });
 
         mainFrame.getHeader().beobachteTicketsKaufen(e -> {
-            try {
-                TicketsKaufen view = new TicketsKaufen(dbc.ladeVeranstaltungen());
+                TicketsKaufen view = new TicketsKaufen(am.ladeVeranstaltungen());
                 view.beobachteKaufen(e1 -> {
-                    Veranstaltung[] ausgewaehlte = view.getAusgewaehlteVeranstaltungen();
+                    VeranstaltungDTO[] ausgewaehlte = view.getAusgewaehlteVeranstaltungen();
                     if (ausgewaehlte.length > 0) {
                         KaufenModal kaufenModal = new KaufenModal(mainFrame, ausgewaehlte);
                         kaufenModal.beobachteKaufen(e2 -> {
                             if (ausgewaehlte.length == 1)
-                                dbc.kaufeEinzelticket(account, ausgewaehlte[0]);
+                                am.kaufeEinzelticket(ausgewaehlte[0]);
                             else
-                                dbc.kaufeSerienticket(account, ausgewaehlte, kaufenModal.getPreis());
+                                am.kaufeSerienticket(ausgewaehlte);
                             kaufenModal.setVisible(false);
                         });
                         kaufenModal.pack();
                         kaufenModal.setVisible(true);
                     }
                 });
-
                 mainFrame.changeView(view);
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
         });
         final LoginModal loginModal = new LoginModal(mainFrame);
         loginModal.beobachteEinloggen(e -> {
                     try {
-                        account = dbc.login(loginModal.getCurrentEmail(), loginModal.getCurrentPassword());
+                        account = am.login(loginModal.getCurrentEmail(), loginModal.getCurrentPassword());
                         loginModal.setVisible(false);
                         mainFrame.getHeader().setAccount(account);
                         mainFrame.pack();
                     } catch (InvalidDataException e1) {
                         loginModal.loginFehlgeschlagen();
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
                     }
                 }
         );
@@ -71,7 +53,7 @@ public class ViewController {
             RegistrierenModal registrierenModal = new RegistrierenModal(mainFrame);
             registrierenModal.beobachteRegistrieren(e1 -> {
                 try {
-                    dbc.registrieren(registrierenModal.getCurrentEmail(), registrierenModal.getCurrentPassword());
+                    am.registrieren(registrierenModal.getCurrentEmail(), registrierenModal.getCurrentPassword());
                     registrierenModal.setVisible(false);
                     loginModal.setVisible(true);
                 } catch (InvalidDataException ex) {

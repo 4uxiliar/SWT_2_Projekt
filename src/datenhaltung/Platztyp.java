@@ -1,4 +1,4 @@
-package model;
+package datenhaltung;
 
 public enum Platztyp {
     SITZPLATZ,

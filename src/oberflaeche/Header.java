@@ -1,6 +1,6 @@
-package view;
+package oberflaeche;
 
-import model.Account;
+import datenhaltung.AccountDTO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +27,7 @@ public class Header extends JPanel {
         add(this.email, BorderLayout.EAST);
     }
 
-    public void setAccount(Account account) {
+    public void setAccount(AccountDTO account) {
         email.setText(account.getEmail());
     }
 

@@ -1,4 +1,4 @@
-package view;
+package oberflaeche;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
