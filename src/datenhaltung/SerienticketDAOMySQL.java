@@ -45,13 +45,13 @@ public class SerienticketDAOMySQL implements ISerienticketDAO {
     public boolean insert(SerienticketDTO serienticketDTO, long accountId) {
         try {
             DatenbankController.getInstance().execute("INSERT INTO SERIENTICKET VALUES (NULL,?,?)", serienticketDTO.getPreis(), accountId);
-            ClosedResultSet crs = DatenbankController.getInstance().executeQuery("SELECT LAST_INSERT_ID()");
+            ClosedResultSet crs = DatenbankController.getInstance().executeQuery("SELECT max(SERIENTICKET_ID) FROM SERIENTICKET");
             crs.next();
-            final long serienticketId = crs.getLong("LAST_INSERT_ID()");
+            final long serienticketId = crs.getLong("max(SERIENTICKET_ID)");
             serienticketDTO.getVeranstaltungen().forEach((veranstaltungDTO, platztyp) -> {
                 try {
                     DatenbankController.getInstance().execute(
-                            "INSERT INTO SERIENTICKET_VERANSTALTUNG VALUES (?,?,?)", serienticketId, veranstaltungDTO.getVeranstaltung_id(), platztyp);
+                            "INSERT INTO SERIENTICKET_VERANSTALTUNG VALUES (?,?,?)", serienticketId, veranstaltungDTO.getVeranstaltung_id(), platztyp.name());
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

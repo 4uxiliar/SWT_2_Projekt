@@ -1,13 +1,12 @@
 package userInterface;
 
-import oberflaeche.ViewController;
+import oberflaeche.MainFrame;
 
 import java.util.Observable;
 
 public class Starter extends Observable{
 
     public static void main(String[] args) {
-
-        ViewController.getInstance();
+        MainFrame mainFrame = new MainFrame();
     }
 }

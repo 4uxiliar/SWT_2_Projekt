@@ -1,41 +1,22 @@
 package fachkonzept;
 
 import datenhaltung.*;
-import misc.InvalidDataException;
 
 import java.util.LinkedList;
 
-public class Fachkonzept {
-    private AccountDTO activeAccount;
-    private IAccountDAO accountDAO;
+public class TicketManager {
     private IEinzelticketDAO einzelticketDAO;
-    private ISerienticketDAO serienticketDAO;
     private IVeranstaltungDAO veranstaltungDAO;
     private IVeranstaltungsortDAO veranstaltungsortDAO;
     private IAdresseDAO adresseDAO;
+    private ISerienticketDAO serienticketDAO;
 
-    public Fachkonzept(IAccountDAO accountDAO, IEinzelticketDAO einzelticketDAO, ISerienticketDAO serienticketDAO, IVeranstaltungDAO veranstaltungDAO, IVeranstaltungsortDAO veranstaltungsortDAO, IAdresseDAO adresseDAO) {
-        this.accountDAO = accountDAO;
+    public TicketManager(IEinzelticketDAO einzelticketDAO, IVeranstaltungDAO veranstaltungDAO, IVeranstaltungsortDAO veranstaltungsortDAO, IAdresseDAO adresseDAO, ISerienticketDAO serienticketDAO) {
         this.einzelticketDAO = einzelticketDAO;
-        this.serienticketDAO = serienticketDAO;
         this.veranstaltungDAO = veranstaltungDAO;
         this.veranstaltungsortDAO = veranstaltungsortDAO;
         this.adresseDAO = adresseDAO;
-    }
-
-    public AccountDTO login(String email, String password) throws InvalidDataException {
-        activeAccount = accountDAO.selectByUsernameAndPassword(email, password);
-        if (activeAccount != null) {
-            ladeTickets(activeAccount);
-            return activeAccount;
-        }
-        throw new InvalidDataException("Falscher Benutzername oder Kennwort.");
-    }
-
-    public void registrieren(String email, String password) throws InvalidDataException {
-        AccountDTO account = new AccountDTO(-1);
-        account.setEmail(email);
-        accountDAO.insert(account, password);
+        this.serienticketDAO = serienticketDAO;
     }
 
     public void ladeTickets(AccountDTO account) {
@@ -67,23 +48,12 @@ public class Fachkonzept {
         account.setTickets(tickets.toArray(new TicketDTO[serientickets.size()]));
     }
 
-    public VeranstaltungDTO[] ladeVeranstaltungen() {
-        VeranstaltungDTO[] veranstaltungen = veranstaltungDAO.selectAll();
-        for (VeranstaltungDTO veranstaltung : veranstaltungen) {
-            VeranstaltungsortDTO veranstaltungsort = veranstaltungsortDAO.selectById(veranstaltung.getVeranstaltungsort().getId());
-            AdresseDTO adresse = adresseDAO.selectById(veranstaltungsort.getAdresse().getId());
-            veranstaltungsort.setAdresse(adresse);
-            veranstaltung.setVeranstaltungsort(veranstaltungsort);
-        }
-        return veranstaltungen;
-    }
-
     public void kaufeEinzelticket(VeranstaltungDTO veranstaltung) {
         EinzelticketDTO einzelticket = new EinzelticketDTO(-1);
         einzelticket.setPreis(veranstaltung.getPreis());
         einzelticket.setVeranstaltung(veranstaltung);
         einzelticket.setPlatztyp(Platztyp.SITZPLATZ);
-        einzelticketDAO.insert(einzelticket, activeAccount.getId());
+        einzelticketDAO.insert(einzelticket, Fassade.getInstance().getActiveAccount().getId());
     }
 
     public void kaufeSerienticket(VeranstaltungDTO[] veranstaltungen) {
@@ -94,7 +64,6 @@ public class Fachkonzept {
             preis += veranstaltung.getPreis();
         }
         serienticket.setPreis(preis * 0.9);
-        serienticketDAO.insert(serienticket, activeAccount.getId());
+        serienticketDAO.insert(serienticket, Fassade.getInstance().getActiveAccount().getId());
     }
 }
-

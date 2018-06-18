@@ -1,5 +1,6 @@
 package datenhaltung;
 
+import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -78,7 +79,10 @@ public class ClosedResultSet {
     public long getLong(String columnLabel) {
         for (Column<?> column : columns)
             if (column.name.equals(columnLabel))
-                return (Long) column.entries.get(pointer);
+                if (column.entries.get(pointer).getClass() == BigInteger.class)
+                    return ((BigInteger) column.entries.get(pointer)).longValue();
+                else
+                    return (Long) column.entries.get(pointer);
         return -1;
     }
 

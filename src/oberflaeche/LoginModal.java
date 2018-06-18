@@ -1,16 +1,18 @@
 package oberflaeche;
 
+import fachkonzept.Fassade;
+import misc.InvalidDataException;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 public class LoginModal extends JDialog {
     private JPanel layout;
     private JLabel beschreibung;
     private JTextField email;
     private JTextField password;
-    private JButton einloggen;
-    private JButton registrieren;
+    private MyButton einloggen;
+    private MyButton registrieren;
 
     public LoginModal(JFrame owner) {
         super(owner, "Login", true);
@@ -18,8 +20,8 @@ public class LoginModal extends JDialog {
         beschreibung = new JLabel("<html><body>Bitte gebe deine Email und dein Passwort ein.<br>Wenn du noch keinen Account hast, dürcke auf registrieren.</body></html>");
         email = new JTextField("admin@admin.com");
         password = new JTextField("password123");
-        einloggen = new JButton("Log in");
-        registrieren = new JButton("Registrieren");
+        einloggen = new MyButton("Log in");
+        registrieren = new MyButton("Registrieren");
         layout.add(beschreibung);
         layout.add(email);
         layout.add(password);
@@ -27,26 +29,27 @@ public class LoginModal extends JDialog {
         layout.add(registrieren);
         getContentPane().add(layout);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        einloggen.attach(new Observer() {
+            @Override
+            public void update() {
+                try {
+                    Fassade.getInstance().login(email.getText(), password.getText());
+                    setVisible(false);
+                } catch (InvalidDataException e1) {
+                    beschreibung.setText("Die Email oder das Passwort war falsch. Bitte versuche es erneut.");
+                }
+            }
+        });
+
+        registrieren.attach(new Observer() {
+            @Override
+            public void update() {
+                setVisible(false);
+                (new RegistrierenModal((MainFrame) getOwner())).setVisible(true);
+            }
+        });
         pack();
     }
 
-    public void beobachteEinloggen(ActionListener actionListener) {
-        einloggen.addActionListener(actionListener);
-    }
-
-    public void beobachteRegistrieren(ActionListener actionListener) {
-        registrieren.addActionListener(actionListener);
-    }
-
-    public String getCurrentEmail() {
-        return email.getText();
-    }
-
-    public String getCurrentPassword() {
-        return password.getText();
-    }
-
-    public void loginFehlgeschlagen() {
-        beschreibung.setText("Die Email oder das Passwort war falsch. Bitte versuche es erneut.");
-    }
 }

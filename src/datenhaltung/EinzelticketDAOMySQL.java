@@ -30,7 +30,7 @@ public class EinzelticketDAOMySQL implements IEinzelticketDAO{
     @Override
     public boolean insert(EinzelticketDTO einzelticket, long accountId) {
         try {
-            return DatenbankController.getInstance().execute("INSERT INTO EINZELTICKET VALUES (NULL,?,?,?,?)", einzelticket.getPreis(), einzelticket.getPlatztyp(), einzelticket.getVeranstaltung().getVeranstaltung_id());
+            return DatenbankController.getInstance().execute("INSERT INTO EINZELTICKET VALUES (NULL,?,?,?,?)", einzelticket.getPreis(), einzelticket.getPlatztyp().name(), einzelticket.getVeranstaltung().getVeranstaltung_id(), accountId);
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

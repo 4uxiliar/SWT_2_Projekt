@@ -17,6 +17,10 @@ public class VeranstaltungsortDTO {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setAdresse(AdresseDTO adresse) {
         this.adresse = adresse;
     }
@@ -27,6 +31,6 @@ public class VeranstaltungsortDTO {
 
     @Override
     public String toString() {
-        return name + " " +adresse;
+        return name + " " + adresse;
     }
 }

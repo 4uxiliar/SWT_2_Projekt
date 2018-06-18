@@ -1,8 +1,10 @@
 package oberflaeche;
 
+import fachkonzept.Fassade;
+import misc.InvalidDataException;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 public class RegistrierenModal extends JDialog {
 
@@ -10,7 +12,7 @@ public class RegistrierenModal extends JDialog {
     private JLabel beschreibung;
     private JTextField email;
     private JTextField password;
-    private JButton registrieren;
+    private MyButton registrieren;
 
     public RegistrierenModal(JFrame owner) {
         super(owner, "Registrieren", true);
@@ -18,31 +20,26 @@ public class RegistrierenModal extends JDialog {
         beschreibung = new JLabel("<html><body>Bitte gebe deine Email und dein Passwort ein.<br></body></html>");
         email = new JTextField("Email");
         password = new JTextField("Passwort");
-        registrieren = new JButton("Registrieren");
+        registrieren = new MyButton("Registrieren");
         layout.add(beschreibung);
         layout.add(email);
         layout.add(password);
         layout.add(registrieren);
         getContentPane().add(layout);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        registrieren.attach(new Observer() {
+            @Override
+            public void update() {
+                try {
+                    Fassade.getInstance().registrieren(email.getText(), password.getText());
+                    setVisible(false);
+                    (new LoginModal((MainFrame) getOwner())).setVisible(true);
+                } catch (InvalidDataException e) {
+                    beschreibung.setText("Die Email ist bereits in Verwendung.");
+                }
+            }
+        });
         pack();
     }
-
-    public void beobachteRegistrieren(ActionListener actionListener) {
-        registrieren.addActionListener(actionListener);
-    }
-
-    public String getCurrentEmail() {
-        return email.getText();
-    }
-
-    public String getCurrentPassword() {
-        return password.getText();
-    }
-
-    public void registrierenFehlgeschlagen() {
-        beschreibung.setText("Die Email ist bereits in Verwendung.");
-    }
-
-
 }

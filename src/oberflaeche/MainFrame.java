@@ -19,6 +19,7 @@ public class MainFrame extends JFrame{
         setContentPane(layout);
         pack();
         setVisible(true);
+        (new LoginModal(this)).setVisible(true);
     }
 
     public Header getHeader() {
@@ -26,7 +27,6 @@ public class MainFrame extends JFrame{
     }
 
     public void changeView(JPanel newView){
-        // TODO Check, whether pack is necessary
         if(currentView!=null)
         layout.remove(currentView);
         currentView = newView;

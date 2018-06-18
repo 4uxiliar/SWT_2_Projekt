@@ -20,9 +20,9 @@ public class AccountDAOMySQL implements IAccountDAO {
     }
 
     @Override
-    public boolean insert(AccountDTO email, String password) {
+    public boolean insert(AccountDTO account, String password) {
         try {
-            return DatenbankController.getInstance().execute("INSERT INTO ACCOUNT VALUES (NULL, ?, ?)", email, password);
+            return DatenbankController.getInstance().execute("INSERT INTO ACCOUNT VALUES (NULL, ?, ?)", account.getEmail(), password);
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
