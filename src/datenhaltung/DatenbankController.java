@@ -32,18 +32,12 @@ public class DatenbankController {
     public void connect() throws SQLException{
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/ticketshopasd", username, password);
-            System.out.println(connection);;
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/ticketshop", username, password);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             System.err.println("Der MySQL-Connector kann nicht gladen/gefunden werden. Das Programm terminiert nun.");
             System.exit(1);
         }
-        //catch (SQLException e) {
-        //    e.printStackTrace();
-        //    System.err.println("Mit der Datenbank kann nicht verbunden werden. Das Programm terminiert nun.");
-         //   System.exit(1);
-        //}
     }
 
     public void disconnect() {
