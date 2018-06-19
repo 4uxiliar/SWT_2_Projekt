@@ -49,12 +49,9 @@ public class SerienticketDAOMySQL implements ISerienticketDAO {
             crs.next();
             final long serienticketId = crs.getLong("max(SERIENTICKET_ID)");
             serienticketDTO.getVeranstaltungen().forEach((veranstaltungDTO, platztyp) -> {
-                try {
-                    DatenbankController.getInstance().execute(
-                            "INSERT INTO SERIENTICKET_VERANSTALTUNG VALUES (?,?,?)", serienticketId, veranstaltungDTO.getVeranstaltung_id(), platztyp.name());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                DatenbankController.getInstance().execute(
+                        "INSERT INTO SERIENTICKET_VERANSTALTUNG VALUES (?,?,?)", serienticketId, veranstaltungDTO.getVeranstaltung_id(), platztyp.name());
+
             });
         } catch (SQLException e) {
             e.printStackTrace();

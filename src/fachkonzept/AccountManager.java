@@ -16,7 +16,6 @@ public class AccountManager {
     public AccountDTO login(String email, String password) throws InvalidDataException {
         activeAccount = accountDAO.selectByUsernameAndPassword(email, password);
         if (activeAccount != null) {
-            //Fassade.getInstance().ladeTickets(activeAccount);
             return activeAccount;
         }
         throw new InvalidDataException("Falscher Benutzername oder Kennwort.");

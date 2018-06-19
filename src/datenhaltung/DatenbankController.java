@@ -171,12 +171,18 @@ public class DatenbankController {
         return crs;
     }
 
-    public boolean execute(String query, Object... params) throws SQLException {
+    public boolean execute(String query, Object... params) {
         connect();
-        PreparedStatement statement = connection.prepareStatement(query);
-        for (int i = 1; i <= params.length; i++)
-            statement.setObject(i, params[i - 1]);
-        boolean executed = statement.execute();
+        boolean executed;
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            for (int i = 1; i <= params.length; i++)
+                statement.setObject(i, params[i - 1]);
+            statement.execute();
+            executed= true;
+        } catch (SQLException e) {
+            executed = false;
+        }
         disconnect();
         return executed;
     }

@@ -8,8 +8,7 @@ public class AccountDAOMySQL implements IAccountDAO {
         AccountDTO account = null;
         try {
             ClosedResultSet crs = DatenbankController.getInstance().executeQuery("SELECT * FROM ACCOUNT a WHERE a.EMAIL=? AND a.PASSWORD=?", email, password);
-            if(crs.next())
-            {
+            if (crs.next()) {
                 account = new AccountDTO(crs.getLong("ACCOUNT_ID"));
                 account.setEmail(crs.getString("EMAIL"));
             }
@@ -21,11 +20,6 @@ public class AccountDAOMySQL implements IAccountDAO {
 
     @Override
     public boolean insert(AccountDTO account, String password) {
-        try {
-            return DatenbankController.getInstance().execute("INSERT INTO ACCOUNT VALUES (NULL, ?, ?)", account.getEmail(), password);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return DatenbankController.getInstance().execute("INSERT INTO ACCOUNT VALUES (NULL, ?, ?)", account.getEmail(), password);
     }
 }
