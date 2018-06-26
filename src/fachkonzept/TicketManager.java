@@ -4,6 +4,9 @@ import datenhaltung.*;
 
 import java.util.LinkedList;
 
+/**
+ * Macht die Verwaltung der Tickets möglich.
+ */
 public class TicketManager {
     private IEinzelticketDAO einzelticketDAO;
     private IVeranstaltungDAO veranstaltungDAO;
@@ -19,6 +22,10 @@ public class TicketManager {
         this.serienticketDAO = serienticketDAO;
     }
 
+    /**
+     * Lädt die bereits gekauften Tickets eines Accounts.
+     * @param account des angemeldeten Benutzers.
+     */
     public void ladeTickets(AccountDTO account) {
         LinkedList<TicketDTO> tickets = new LinkedList<>();
         LinkedList<EinzelticketDTO> einzeltickets = einzelticketDAO.selectAllByBesitzerId(account.getId());
@@ -48,6 +55,12 @@ public class TicketManager {
         account.setTickets(tickets.toArray(new TicketDTO[serientickets.size()]));
     }
 
+    /**
+     * Kauft ein ausgewähltes Einzelticket einer Veranstaltung.
+     * Das Ticket wird dem angemeldeten Account zugeordnet.
+     * @param veranstaltung für die das Ticket ist
+     */
+
     public void kaufeEinzelticket(VeranstaltungDTO veranstaltung) {
         EinzelticketDTO einzelticket = new EinzelticketDTO(-1);
         einzelticket.setPreis(veranstaltung.getPreis());
@@ -55,6 +68,12 @@ public class TicketManager {
         einzelticket.setPlatztyp(Platztyp.SITZPLATZ);
         einzelticketDAO.insert(einzelticket, Fassade.getInstance().getActiveAccount().getId());
     }
+
+    /**
+     * Kauft ein ausgewähltes Serienticket einer Veranstaltung.
+     * Das Ticket wird dem angemeldeten Account zugeordnet.
+     * @param veranstaltungen
+     */
 
     public void kaufeSerienticket(VeranstaltungDTO[] veranstaltungen) {
         SerienticketDTO serienticket = new SerienticketDTO(-1);

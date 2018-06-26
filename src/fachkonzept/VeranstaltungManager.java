@@ -2,6 +2,9 @@ package fachkonzept;
 
 import datenhaltung.*;
 
+/**
+ * Verwaltet die Veranstaltungen.
+ */
 public class VeranstaltungManager {
     private IVeranstaltungDAO veranstaltungDAO;
     private IVeranstaltungsortDAO veranstaltungsortDAO;
@@ -13,6 +16,10 @@ public class VeranstaltungManager {
         this.adresseDAO = adresseDAO;
     }
 
+    /**
+     * Lädt die bereits erstellten Veranstaltungen.
+     * @return
+     */
     public VeranstaltungDTO[] ladeVeranstaltungen() {
         VeranstaltungDTO[] veranstaltungen = veranstaltungDAO.selectAll();
         for (VeranstaltungDTO veranstaltung : veranstaltungen) {
