@@ -25,6 +25,7 @@ public class MainFrame extends JFrame{
     public Header getHeader() {
         return header;
     }
+//TODO
 
     public void changeView(JPanel newView){
         if(currentView!=null)
