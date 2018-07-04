@@ -1,12 +1,10 @@
 package datenhaltung;
 
-import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class DatenbankControllerTest {
 
