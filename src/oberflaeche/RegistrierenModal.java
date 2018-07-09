@@ -15,12 +15,12 @@ public class RegistrierenModal extends JDialog {
     private MyButton registrieren;
 
     public RegistrierenModal(JFrame owner) {
-        super(owner, "Registrieren", true);
+        super(owner, SprachenController.getInstance().getText("registrieren"), true);
         layout = new JPanel(new GridLayout(5, 1));
-        beschreibung = new JLabel("<html><body>Bitte gebe deine Email und dein Passwort ein.<br></body></html>");
+        beschreibung = new JLabel("<html><body>" + SprachenController.getInstance().getText("eingabeaufforderung2") + "<br></body></html>");
         email = new JTextField("Email");
-        password = new JTextField("Passwort");
-        registrieren = new MyButton("Registrieren");
+        password = new JTextField(SprachenController.getInstance().getText("passwort"));
+        registrieren = new MyButton(SprachenController.getInstance().getText("registrieren"));
         layout.add(beschreibung);
         layout.add(email);
         layout.add(password);
@@ -36,7 +36,7 @@ public class RegistrierenModal extends JDialog {
                     setVisible(false);
                     (new LoginModal((MainFrame) getOwner())).setVisible(true);
                 } catch (InvalidDataException e) {
-                    beschreibung.setText("Die Email ist bereits in Verwendung.");
+                    beschreibung.setText(SprachenController.getInstance().getText("schonVerwendet"));
                 }
             }
         });

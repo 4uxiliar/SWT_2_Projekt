@@ -14,7 +14,7 @@ public class TicketsKaufen extends JPanel {
         super(new GridLayout(2, 1));
         this.veranstaltungenList = new JList<>(veranstaltungen);
         this.veranstaltungenList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        kaufen = new MyButton("Kaufen");
+        kaufen = new MyButton(SprachenController.getInstance().getText("kaufen"));
         kaufen.attach(new Observer() {
             @Override
             public void update() {

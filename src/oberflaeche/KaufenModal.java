@@ -22,17 +22,17 @@ public class KaufenModal extends JDialog {
         }
         bezeichnung += "</body></html>";
         if (veranstaltungen.length == 1)
-            titel = "Einzelticket kaufen";
+            titel = SprachenController.getInstance().getText("einzelticketKaufen");
         else {
-            titel = "Serienticket kaufen";
+            titel = SprachenController.getInstance().getText("serienticketKaufen");
             gesamtpreis *= 0.9;
         }
         setTitle(titel);
 
         layout = new JPanel(new GridLayout(3, 1));
         beschreibung = new JLabel(bezeichnung);
-        preis = new JLabel("Gesamtpreis: " + gesamtpreis);
-        kaufen = new MyButton("Kaufen");
+        preis = new JLabel(SprachenController.getInstance().getText("gesamtpreis") + ": " + gesamtpreis);
+        kaufen = new MyButton(SprachenController.getInstance().getText("kaufen"));
         layout.add(beschreibung);
         layout.add(preis);
         layout.add(kaufen);

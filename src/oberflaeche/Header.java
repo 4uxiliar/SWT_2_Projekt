@@ -17,8 +17,8 @@ public class Header extends JPanel {
         super(new BorderLayout());
 
         navigation = new JPanel();
-        meineTickets = new MyButton("Meine Tickets");
-        ticketsKaufen = new MyButton("Tickets kaufen");
+        meineTickets = new MyButton(SprachenController.getInstance().getText("meineTickets"));
+        ticketsKaufen = new MyButton(SprachenController.getInstance().getText("kaufeTickets"));
         navigation.add(meineTickets);
         navigation.add(ticketsKaufen);
 

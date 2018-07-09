@@ -17,11 +17,11 @@ public class LoginModal extends JDialog {
     public LoginModal(JFrame owner) {
         super(owner, "Login", true);
         layout = new JPanel(new GridLayout(5, 1));
-        beschreibung = new JLabel("<html><body>Bitte gebe deine Email und dein Passwort ein.<br>Wenn du noch keinen Account hast, dürcke auf registrieren.</body></html>");
+        beschreibung = new JLabel(SprachenController.getInstance().getText("eingabeaufforderung"));
         email = new JTextField("admin@admin.com");
         password = new JTextField("password123");
         einloggen = new MyButton("Log in");
-        registrieren = new MyButton("Registrieren");
+        registrieren = new MyButton(SprachenController.getInstance().getText("registrieren"));
         layout.add(beschreibung);
         layout.add(email);
         layout.add(password);
@@ -37,7 +37,7 @@ public class LoginModal extends JDialog {
                     Fassade.getInstance().login(email.getText(), password.getText());
                     setVisible(false);
                 } catch (InvalidDataException e1) {
-                    beschreibung.setText("Die Email oder das Passwort war falsch. Bitte versuche es erneut.");
+                    beschreibung.setText(SprachenController.getInstance().getText("falscheEingabe"));
                 }
             }
         });
