@@ -3,9 +3,12 @@ package oberflaeche;
 import javax.swing.*;
 import java.util.LinkedList;
 
+/**
+ * Eigenimplemtentation eines Buttons, der von JButton erbt.
+ * Implementierung ist im Rahmen des Observable-Musters erfolgt.
+ */
 public class MyButton extends JButton implements Observable {
     private LinkedList<Observer> observers = new LinkedList<>();
-//TODO
     @Override
     public void attach(Observer observer) {
         observers.add(observer);

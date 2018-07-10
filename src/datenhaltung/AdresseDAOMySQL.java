@@ -1,5 +1,7 @@
 package datenhaltung;
 
+import misc.LoggingController;
+
 import java.sql.SQLException;
 
 public class AdresseDAOMySQL implements IAdresseDAO {
@@ -7,7 +9,7 @@ public class AdresseDAOMySQL implements IAdresseDAO {
     public AdresseDTO selectById(long id) {
         AdresseDTO adresse = new AdresseDTO(-1);
         try {
-            ClosedResultSet crs = DatenbankController.getInstance().executeQuery("SELECT * FROM ADRESSE WHERE ADRESSE_ID=?", id);
+            ClosedResultSet crs = DatenbankController.getInstance().anfragen("SELECT * FROM ADRESSE WHERE ADRESSE_ID=?", id);
             while (crs.next()) {
                 adresse = new AdresseDTO(crs.getLong("ADRESSE_ID"));
                 adresse.setOrt(crs.getString("ORT"));
@@ -16,7 +18,7 @@ public class AdresseDAOMySQL implements IAdresseDAO {
                 adresse.setHausnumer(crs.getString("HAUSNUMMER"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggingController.getInstance().getLogger().severe(e.getMessage());
         }
         return adresse;
     }

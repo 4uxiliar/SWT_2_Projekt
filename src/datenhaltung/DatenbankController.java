@@ -1,14 +1,21 @@
 package datenhaltung;
 
+import misc.LoggingController;
+
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+
+/**
+ * Klasse, die die Zugriffe auf die Datenbank steuert. Es handelt sich in diesem Fall um eine MySQL-Datenbank.
+ * Die Klasse ist ein Singleton
+ */
 public class DatenbankController {
     private static DatenbankController dbc;
     private Connection connection;
-    private final String username = "root";
+    private final String username = "root1";
     private final String password = "root";
     private final DateFormat dateTime = new SimpleDateFormat("kk:mm:ss dd.MM.yyyy");
 
@@ -21,36 +28,43 @@ public class DatenbankController {
 
     private DatenbankController() {
         try {
-            connect();
+            verbinden();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggingController.getInstance().getLogger().severe(e.getMessage());
         }
         setup();
-        disconnect();
+        verbindungTrennen();
     }
 
-    public void connect() throws SQLException{
+    /**
+     * Versucht sich mit der Datenbank anhand der gegebenen default-Werte zu verbinden.
+     * @throws SQLException Die Verbindung ist fehlgeschlagen.
+     */
+    public void verbinden() throws SQLException{
         try {
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://localhost/ticketshop", username, password);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            System.err.println("Der MySQL-Connector kann nicht gladen/gefunden werden. Das Programm terminiert nun.");
+            LoggingController.getInstance().getLogger().severe("Der MySQL-Connector kann nicht gladen/gefunden werden. Das Programm terminiert nun."+e.getMessage());
             System.exit(1);
         }
     }
 
-    public void disconnect() {
+    public void verbindungTrennen() {
         try {
             if (!connection.isClosed())
                 connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggingController.getInstance().getLogger().severe(e.getMessage());
         }
     }
 
+    /**
+     * Diese Methode wird nur beim erstmaligen erstellen eines Objektes der Klasse Datenbankcontroller ausgeführt.
+     * Die Methode stellt sicher, dass alle Tabellen vorhanden sind (erstellt sie bei Abwesenheit) und fügt, wenn noch keine
+     * Daten vorhanden sind, Dummydaten hinzu
+     */
     private void setup() {
-        //Creates the tables if they don't already exist.
         final String accountSetup =
                 "CREATE TABLE IF NOT EXISTS ACCOUNT(" +
                         "ACCOUNT_ID BIGINT AUTO_INCREMENT PRIMARY KEY," +
@@ -154,40 +168,55 @@ public class DatenbankController {
                 statement.execute("INSERT INTO SERIENTICKET_VERANSTALTUNG VALUES (1, 2, 'STEHPLATZ')");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggingController.getInstance().getLogger().severe(e.getMessage());
         } catch (ParseException e) {
-            e.printStackTrace();
+            LoggingController.getInstance().getLogger().severe(e.getMessage());
         }
     }
 
-
-    public ClosedResultSet executeQuery(String query, Object... params) throws SQLException {
-        connect();
-        PreparedStatement statement = connection.prepareStatement(query);
+    /**
+     * Führt eine Anfrage (Sprich eine dql-Operation / SELECT) durch
+     * Zum Schutz vor SQL-Injection wird ein prepared Statement einzeln zusammengebaut
+     * @param anfrage Die Anfrage. Variabeln, die ersetzt werden sollen, werden mit ? im String gekennzeichnet
+     * @param params Die Parmeter, die der Anfrage in der Reihenfolge ihres Auftretens hinzugefügt werden sollen
+     * @return Gibt ein {@link ClosedResultSet} zurück, da ein normales ResultSet nach dem schließen einer Verbindung unbrauchbar wird
+     * @throws SQLException
+     */
+    public ClosedResultSet anfragen(String anfrage, Object... params) throws SQLException {
+        verbinden();
+        PreparedStatement statement = connection.prepareStatement(anfrage);
         for (int i = 1; i <= params.length; i++)
             statement.setObject(i, params[i - 1]);
         ClosedResultSet crs = new ClosedResultSet(statement.executeQuery());
-        disconnect();
+        verbindungTrennen();
         return crs;
     }
 
-    public boolean execute(String query, Object... params) {
+    /**
+     * Führt eine beliebige Datenbankoperation durch
+     * Zum Schutz vor SQL-Injection wird ein prepared Statement einzeln zusammengebaut
+     * @param befehl Die Befehl. Variabeln, die ersetzt werden sollen, werden mit ? im String gekennzeichnet
+     * @param params Die Parmeter, die der Anfrage in der Reihenfolge ihres Auftretens hinzugefügt werden sollen
+     * @return Einen boolean zurück, ob die Anweisung erfolgreich ausgefürt wurde
+     * @throws SQLException
+     */
+    public boolean ausfuehren(String befehl, Object... params) {
         try {
-            connect();
+            verbinden();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggingController.getInstance().getLogger().severe(e.getMessage());
         }
-        boolean executed;
+        boolean ausgefuehrt;
         try {
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = connection.prepareStatement(befehl);
             for (int i = 1; i <= params.length; i++)
                 statement.setObject(i, params[i - 1]);
             statement.execute();
-            executed= true;
+            ausgefuehrt= true;
         } catch (SQLException e) {
-            executed = false;
+            ausgefuehrt = false;
         }
-        disconnect();
-        return executed;
+        verbindungTrennen();
+        return ausgefuehrt;
     }
 }

@@ -1,5 +1,7 @@
 package datenhaltung;
 
+import misc.LoggingController;
+
 import java.sql.SQLException;
 import java.util.LinkedList;
 
@@ -8,7 +10,7 @@ public class VeranstaltungDAOMySQL implements IVeranstaltungDAO {
     public VeranstaltungDTO selectById(long id) {
         VeranstaltungDTO veranstaltung = new VeranstaltungDTO(-1);
         try {
-            ClosedResultSet crs = DatenbankController.getInstance().executeQuery("SELECT * FROM VERANSTALTUNG WHERE VERANSTALTUNG_ID=?", id);
+            ClosedResultSet crs = DatenbankController.getInstance().anfragen("SELECT * FROM VERANSTALTUNG WHERE VERANSTALTUNG_ID=?", id);
             while(crs.next())
             {
                 veranstaltung = new VeranstaltungDTO(crs.getLong("VERANSTALTUNG_ID"));
@@ -19,7 +21,7 @@ public class VeranstaltungDAOMySQL implements IVeranstaltungDAO {
                 veranstaltung.setVeranstaltungsort(new VeranstaltungsortDTO(crs.getLong("VERANSTALTUNGSORT")));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggingController.getInstance().getLogger().severe(e.getMessage());
         }
         return veranstaltung;
     }
@@ -28,7 +30,7 @@ public class VeranstaltungDAOMySQL implements IVeranstaltungDAO {
     public VeranstaltungDTO[] selectAll() {
         LinkedList<VeranstaltungDTO> veranstaltungen = new LinkedList<>();
         try {
-            ClosedResultSet crs = DatenbankController.getInstance().executeQuery("SELECT * FROM VERANSTALTUNG");
+            ClosedResultSet crs = DatenbankController.getInstance().anfragen("SELECT * FROM VERANSTALTUNG");
             while(crs.next())
             {
                 VeranstaltungDTO veranstaltung = new VeranstaltungDTO(crs.getLong("VERANSTALTUNG_ID"));
@@ -40,7 +42,7 @@ public class VeranstaltungDAOMySQL implements IVeranstaltungDAO {
                 veranstaltungen.add(veranstaltung);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggingController.getInstance().getLogger().severe(e.getMessage());
         }
         return veranstaltungen.toArray(new VeranstaltungDTO[veranstaltungen.size()]);
     }

@@ -28,7 +28,7 @@
     <node x="444.49999999999955" y="1531.0">datenhaltung.IAccountDAO</node>
     <node x="4477.719931127506" y="540.0">datenhaltung.VeranstaltungDTO</node>
     <node x="3925.829316245567" y="3350.0">oberflaeche.RegistrierenModal</node>
-    <node x="6241.492306441645" y="4487.0">userInterface.Starter</node>
+    <node x="6241.492306441645" y="4487.0">misc.Starter</node>
     <node x="6479.443270342957" y="3350.0">oberflaeche.KaufenModal</node>
     <node x="6221.992306441645" y="4263.0">oberflaeche.MainFrame</node>
     <node x="972.7499999999995" y="2362.5">datenhaltung.AccountDAOMySQL</node>
@@ -815,7 +815,7 @@
       <point x="4727.35863095238" y="267.0" />
       <point x="39.1875" y="113.5" />
     </edge>
-    <edge source="userInterface.Starter" target="oberflaeche.MainFrame">
+    <edge source="misc.Starter" target="oberflaeche.MainFrame">
       <point x="52.0" y="-31.5" />
       <point x="6397.492306441645" y="4462.0" />
       <point x="6407.242306441645" y="4462.0" />

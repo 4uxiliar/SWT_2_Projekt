@@ -10,14 +10,14 @@ class DatenbankControllerTest {
 
     //@Test
     //public void testeVerbindung()  throws SQLException{
-    //    Executable executable = () -> DatenbankController.getInstance().connect();
+    //    Executable executable = () -> DatenbankController.getInstance().verbinden();
     //    assertThrows(SQLException.class,  executable);
     //}
 
     @Test
     public void testeVerbindung() throws SQLException {
         try {
-            DatenbankController.getInstance().connect();
+            DatenbankController.getInstance().verbinden();
         }
         //Wenn keine Verbindung hergestellt werden kann ist connection null -> null pointer
         catch (NullPointerException n) {
