@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 public class DatenbankController {
     private static DatenbankController dbc;
     private Connection connection;
-    private final String username = "root1";
+    private final String username = "root";
     private final String password = "root";
     private final DateFormat dateTime = new SimpleDateFormat("kk:mm:ss dd.MM.yyyy");
 

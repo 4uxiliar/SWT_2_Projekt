@@ -1,5 +1,7 @@
 package datenhaltung;
 
+import oberflaeche.SprachenController;
+
 public class EinzelticketDTO extends TicketDTO {
     private VeranstaltungDTO veranstaltung;
     private Platztyp platztyp;
@@ -26,6 +28,7 @@ public class EinzelticketDTO extends TicketDTO {
 
     @Override
     public String toString() {
-        return "Einzelticket    " + getPreis() + "    " + veranstaltung;
+        SprachenController sc = SprachenController.getInstance();
+        return sc.getText("einzelticket")+" " + (platztyp==Platztyp.STEHPLATZ?sc.getText("stehplatz"):sc.getText("sitzplatz"))+ " " + getPreis() + "    " + veranstaltung;
     }
 }
